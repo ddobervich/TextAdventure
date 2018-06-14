@@ -133,10 +133,12 @@ public class Game {
 			for (int i = 0; i < getPlayers().size(); i++) {
 				r.put(getPlayers().get(i).getName(), name + ": " + input.substring(4));
 			}
+			return r;
 		}
 		if (input.startsWith("look")) {
 			Room room = getRoomofPlayer(name);
 			r.put(name, look(room, name));
+			return r;
 		}
 		if (input.startsWith("observe ")) {
 			String object = input.substring(8);
@@ -216,13 +218,14 @@ public class Game {
 
 	}
 
-	// Copy paste when making additional actions for the player
-	private HashMap<String, String> placeHolder() {
-		HashMap<String, String> r = new HashMap<String, String>();
-
-		return r;
-	}
-
+	/**
+	 * 
+	 * @param room
+	 *            Player's room
+	 * @param name
+	 *            Player's name
+	 * @return String of what player sees
+	 */
 	private String look(Room room, String name) {
 		String out = "You are in " + room.getName();
 		out += "\n";
@@ -248,6 +251,17 @@ public class Game {
 		return out;
 	}
 
+	/**
+	 * Gives the Player information about a given object
+	 * 
+	 * @param currentRoom
+	 *            Player's room
+	 * @param name
+	 *            Player's name
+	 * @param object
+	 *            Object to be observed
+	 * @return String of how object is observed
+	 */
 	private HashMap<String, String> observe(Room currentRoom, String name, String object) {
 		HashMap<String, String> r = new HashMap<String, String>();
 		if (currentRoom.getName().equals(object)) {
@@ -267,6 +281,19 @@ public class Game {
 		return r;
 	}
 
+	/**
+	 * Moves Player to given room
+	 * 
+	 * @param p
+	 *            Player
+	 * @param currentRoom
+	 *            Player's room
+	 * @param name
+	 *            Player's name
+	 * @param location
+	 *            Destination
+	 * @return HashMap of text to be sent to other users.
+	 */
 	private HashMap<String, String> move(Player p, Room currentRoom, String name, String location) {
 		HashMap<String, String> r = new HashMap<String, String>();
 		for (Room newRoom : currentRoom.getConnectedRooms()) {
@@ -314,7 +341,7 @@ public class Game {
 	 *            Player's name
 	 * @param object
 	 *            Name of Object as String
-	 * @return
+	 * @return HashMap of text to be sent to other users.
 	 */
 	private HashMap<String, String> take(Player p, Room currentRoom, String name, String object) {
 		HashMap<String, String> r = new HashMap<String, String>();
@@ -361,7 +388,7 @@ public class Game {
 	 *            Player's name
 	 * @param object
 	 *            Object name as String
-	 * @return
+	 * @return HashMap of text to be sent to other users.
 	 */
 	private HashMap<String, String> drop(Player p, Room currentRoom, String name, String object) {
 		HashMap<String, String> r = new HashMap<String, String>();
@@ -519,4 +546,10 @@ public class Game {
 		return r;
 	}
 
+	// Copy paste when making additional actions for the player
+	private HashMap<String, String> placeHolder() {
+		HashMap<String, String> r = new HashMap<String, String>();
+
+		return r;
+	}
 }

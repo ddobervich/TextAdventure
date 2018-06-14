@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.File;
 import java.util.ArrayList;
 
 public class Room {
@@ -239,31 +236,15 @@ public class Room {
 	}
 
 	public static void loadRoomsFromFile() {
-		String fileName = "./assets/rooms";
-		String line = null;
-		try {
-			FileReader fileReader = new FileReader(fileName);
-			BufferedReader bufferedReader = new BufferedReader(fileReader);
+		File folder = new File("./assets/room");
+		for (File file : folder.listFiles()) {
+			FileReader t = new FileReader(file);
 
-			while ((line = bufferedReader.readLine()) != null) {
-				String[] t = line.split(";");
-				if (t.length < 3) {
-					continue;
-				}
-				try {
-					allRooms.add(new Room(t[0], t[1], Integer.parseInt(t[2])));
-				} catch (Exception e) {
-					continue;
-				}
-			}
-
-			bufferedReader.close();
-		} catch (FileNotFoundException ex) {
-			System.out.println("Unable to open file '" + fileName + "'");
-		} catch (IOException ex) {
-			System.out.println("Error reading file '" + fileName + "'");
+			String n = t.tagS("name");
+			String d = t.tagS("desc");
+			int r = t.tagI("rarity");
+			allRooms.add(new Room(n, d, r));
 		}
-
 	}
 
 	public static Room getRandomRoom() {

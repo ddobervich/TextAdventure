@@ -1,7 +1,5 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+
+import java.io.File;
 import java.util.ArrayList;
 
 public class Item {
@@ -18,7 +16,7 @@ public class Item {
 	private double weight; // weight of item
 	private double thickness; // determines how much can be equipped
 
-	public static ArrayList<Item> items = new ArrayList<Item>();
+	public static final ArrayList<Item> items = new ArrayList<Item>();
 	/*
 	 * Weapon; Food; Armor/Clothes; Object;
 	 */
@@ -84,32 +82,20 @@ public class Item {
 	}
 
 	public static void loadItemsFromFile() {
-		String fileName = "./assets/items";
-		String line = null;
-		try {
-			FileReader fileReader = new FileReader(fileName);
-			BufferedReader bufferedReader = new BufferedReader(fileReader);
+		File folder = new File("./assets/items");
+		for (File file : folder.listFiles()) {
+			FileReader t = new FileReader(file);
 
-			while ((line = bufferedReader.readLine()) != null) {
-				String[] t = line.split(";");
-				if (t.length != 9) {
-					System.out.println(line);
-					continue;
-				}
-				try {
-					items.add(new Item(t[0], t[1], t[2], Integer.parseInt(t[3]), Double.parseDouble(t[4]),
-							Double.parseDouble(t[5]), Double.parseDouble(t[6]), Double.parseDouble(t[7]),
-							Double.parseDouble(t[8])));
-				} catch (Exception e) {
-					continue;
-				}
-			}
-
-			bufferedReader.close();
-		} catch (FileNotFoundException ex) {
-			System.out.println("Unable to open file '" + fileName + "'");
-		} catch (IOException ex) {
-			System.out.println("Error reading file '" + fileName + "'");
+			String n = t.tagS("name");
+			String d = t.tagS("desc");
+			String ty = t.tagS("type");
+			int r = t.tagI("rarity");
+			double a = t.tagD("attack");
+			double de = t.tagD("defense");
+			double s = t.tagD("speed");
+			double w = t.tagD("weight");
+			double th = t.tagD("thickness");
+			items.add(new Item(n, d, ty, r, a, de, s, w, th));
 		}
 
 	}

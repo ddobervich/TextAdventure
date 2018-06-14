@@ -1,7 +1,5 @@
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class Enemy {
@@ -21,7 +19,7 @@ public class Enemy {
 
 	public boolean inFight = false;
 
-	public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+	public static final ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	/*
 	 * Passive; Neutral; Aggressive;
 	 */
@@ -108,31 +106,19 @@ public class Enemy {
 	}
 
 	public static void loadEnemiesFromFile() {
-		String fileName = "./assets/enemies";
-		String line = null;
-		try {
-			FileReader fileReader = new FileReader(fileName);
-			BufferedReader bufferedReader = new BufferedReader(fileReader);
+		File folder = new File("./assets/enemies");
+		for (File file : folder.listFiles()) {
+			FileReader t = new FileReader(file);
 
-			while ((line = bufferedReader.readLine()) != null) {
-				String[] t = line.split(";");
-				if (t.length != 8) {
-					System.out.println(line);
-					continue;
-				}
-				try {
-					enemies.add(new Enemy(t[0], t[1], t[2], Integer.parseInt(t[3]), Double.parseDouble(t[4]),
-							Double.parseDouble(t[5]), Double.parseDouble(t[6]), Double.parseDouble(t[7])));
-				} catch (Exception e) {
-					continue;
-				}
-			}
-
-			bufferedReader.close();
-		} catch (FileNotFoundException ex) {
-			System.out.println("Unable to open file '" + fileName + "'");
-		} catch (IOException ex) {
-			System.out.println("Error reading file '" + fileName + "'");
+			String n = t.tagS("name");
+			String d = t.tagS("desc");
+			String ty = t.tagS("type");
+			int r = t.tagI("rarity");
+			double a = t.tagD("attack");
+			double de = t.tagD("defense");
+			double s = t.tagD("speed");
+			double hp = t.tagD("HP");
+			enemies.add(new Enemy(n, d, ty, r, a, de, s, hp));
 		}
 
 	}
