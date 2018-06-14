@@ -114,28 +114,7 @@ public class Game {
 		Room room = getRoomofPlayer(name);
 		Player player = getPlayer(name);
 		if (!player.inFight) {
-			String out = "You are in " + room.getName();
-			out += "\n";
-			for (Item i : room.getItems()) {
-				out += "\nYou see a " + i.getName();
-			}
-			out += "\n";
-			for (Room roomPath : room.getConnectedRooms()) {
-				String roomName = roomPath.getName();
-				out += "\nYou can enter the " + roomName;
-			}
-			out += "\n";
-			for (Enemy e : room.getEnemies()) {
-				out += "\nYou see " + e.getName();
-			}
-			out += "\n";
-			for (Player p : room.getPlayers()) {
-				if (p.getName().equals(name)) {
-					continue;
-				}
-				out += "\nYou see " + p.getName();
-			}
-			return out;
+			return look(room, name);
 		} else {
 			Fight f = room.getFight(name);
 			String out = "You are in a fight in " + room.getName();
@@ -157,74 +136,23 @@ public class Game {
 		}
 		if (input.startsWith("look")) {
 			Room room = getRoomofPlayer(name);
-			String out = "You are in " + room.getName();
-			out += "\n";
-			for (Item i : room.getItems()) {
-				out += "\nYou see a " + i.getName();
-			}
-			out += "\n";
-			for (Room roomPath : room.getConnectedRooms()) {
-				String roomName = roomPath.getName();
-				out += "\nYou can enter the " + roomName;
-			}
-			out += "\n";
-			for (Enemy e : room.getEnemies()) {
-				out += "\nYou see " + e.getName();
-			}
-			out += "\n";
-			for (Player p : room.getPlayers()) {
-				if (p.getName().equals(name)) {
-					continue;
-				}
-				out += "\nYou see " + p.getName();
-			}
-			r.put(name, out);
+			r.put(name, look(room, name));
 		}
 		if (input.startsWith("observe ")) {
 			String object = input.substring(8);
 			Room currentRoom = getRoomofPlayer(name);
-			if (currentRoom.getName().equals(object)) {
-				r.put(name, currentRoom.getDescription());
-				return r;
-			}
-			Item item = currentRoom.getItem(object);
-			if (item != null) {
-				// TODO also print out item stats
-				r.put(name, item.getName() + "\n" + item.getDescription());
-				return r;
-			}
-			Enemy e = currentRoom.getEnemy(object);
-			if (e != null) {
-				r.put(name, e.getName() + "\n" + e.getDescription());
-			}
+			return observe(currentRoom, name, object);
 
 		}
 		if (input.startsWith("move ")) {
 			String location = input.substring(5);
 			Room currentRoom = getRoomofPlayer(name);
-			for (Room newRoom : currentRoom.getConnectedRooms()) {
-				if (!newRoom.getName().equals(location)) {
-					continue;
-				}
-				Player p = currentRoom.getPlayer(name);
-				currentRoom.removePlayer(p);
-				newRoom.addPlayer(p);
-				r.put(name, "You walk into " + newRoom.getName());
-				return r;
-
-			}
-
+			Player p = currentRoom.getPlayer(name);
+			return move(p, currentRoom, name, location);
 		}
 
 		if (input.startsWith("help")) {
-			String out = "";
-			out += "You are a dungeon explorer!\nType your way through the dungeon.\n";
-			out += "To talk type: \"say <your message>\"\n";
-			out += "To look type: \"look\"\n";
-			out += "To observe something type: \"observe <name of thing>\"\n";
-			out += "To move type: \"move <name of location>\"\n";
-			out += "Have Fun!!!\n\n";
-			r.put(name, out);
+			return help(name);
 		}
 
 		if (input.startsWith("take ") || input.startsWith("pick up ")) {
@@ -233,28 +161,14 @@ public class Game {
 				object = input.substring(5);
 			if (input.startsWith("pick up "))
 				object = input.substring(8);
-
+			Player p = getPlayer(name);
 			Room currentRoom = getRoomofPlayer(name);
-			if (currentRoom.getName().equals(object)) {
-				r.put(name, "You fool! You can't take a room... not yet at least");
-				return r;
-			}
-			Item item = currentRoom.getItem(object);
-			if (item != null) {
-				Player p = getPlayer(name);
-				if (!p.canTakeItem()) {
-					r.put(name, "Your inventory is full");
-					return r;
-				}
-				p.addItem(item);
-				currentRoom.removeItem(item);
-				r.put(name, "You have picked up a " + object);
-			}
+			return take(p, currentRoom, name, object);
 		}
 
 		if (input.startsWith("inventory")) {
 			Player p = getPlayer(name);
-			r.put(name, "Inventory\n" + p.getInventoryAsString());
+			return inventory(p, name);
 		}
 
 		if (input.startsWith("drop ")) {
@@ -309,6 +223,127 @@ public class Game {
 		return r;
 	}
 
+	private String look(Room room, String name) {
+		String out = "You are in " + room.getName();
+		out += "\n";
+		for (Item i : room.getItems()) {
+			out += "\nYou see a " + i.getName();
+		}
+		out += "\n";
+		for (Room roomPath : room.getConnectedRooms()) {
+			String roomName = roomPath.getName();
+			out += "\nYou can enter the " + roomName;
+		}
+		out += "\n";
+		for (Enemy e : room.getEnemies()) {
+			out += "\nYou see " + e.getName();
+		}
+		out += "\n";
+		for (Player p : room.getPlayers()) {
+			if (p.getName().equals(name)) {
+				continue;
+			}
+			out += "\nYou see " + p.getName();
+		}
+		return out;
+	}
+
+	private HashMap<String, String> observe(Room currentRoom, String name, String object) {
+		HashMap<String, String> r = new HashMap<String, String>();
+		if (currentRoom.getName().equals(object)) {
+			r.put(name, currentRoom.getDescription());
+			return r;
+		}
+		Item item = currentRoom.getItem(object);
+		if (item != null) {
+			// TODO also print out item stats
+			r.put(name, item.getName() + "\n" + item.getDescription());
+			return r;
+		}
+		Enemy e = currentRoom.getEnemy(object);
+		if (e != null) {
+			r.put(name, e.getName() + "\n" + e.getDescription());
+		}
+		return r;
+	}
+
+	private HashMap<String, String> move(Player p, Room currentRoom, String name, String location) {
+		HashMap<String, String> r = new HashMap<String, String>();
+		for (Room newRoom : currentRoom.getConnectedRooms()) {
+			if (!newRoom.getName().equals(location)) {
+				continue;
+			}
+			currentRoom.removePlayer(p);
+			newRoom.addPlayer(p);
+			r.put(name, "You walk into " + newRoom.getName());
+			return r;
+
+		}
+		return r;
+	}
+
+	/**
+	 * Sends Player help message
+	 * 
+	 * @param name
+	 *            Player to send message to
+	 * @return String help message
+	 */
+	private HashMap<String, String> help(String name) {
+		// TODO Keep Updated
+		HashMap<String, String> r = new HashMap<String, String>();
+		String out = "";
+		out += "You are a dungeon explorer!\nType your way through the dungeon.\n";
+		out += "To talk type: \"say <your message>\"\n";
+		out += "To look type: \"look\"\n";
+		out += "To observe something type: \"observe <name of thing>\"\n";
+		out += "To move type: \"move <name of location>\"\n";
+		out += "Have Fun!!!\n\n";
+		r.put(name, out);
+		return r;
+	}
+
+	/**
+	 * Picks up an item from the given room for the player
+	 * 
+	 * @param p
+	 *            Player
+	 * @param currentRoom
+	 *            Player's room
+	 * @param name
+	 *            Player's name
+	 * @param object
+	 *            Name of Object as String
+	 * @return
+	 */
+	private HashMap<String, String> take(Player p, Room currentRoom, String name, String object) {
+		HashMap<String, String> r = new HashMap<String, String>();
+		if (currentRoom.getName().equals(object)) {
+			r.put(name, "You fool! You can't take a room... not yet at least");
+			return r;
+		}
+		Item item = currentRoom.getItem(object);
+		if (item != null) {
+			if (!p.canTakeItem()) {
+				r.put(name, "Your inventory is full");
+				return r;
+			}
+			p.addItem(item);
+			currentRoom.removeItem(item);
+			r.put(name, "You have picked up a " + object);
+		}
+		return r;
+	}
+
+	/**
+	 * Returns the String representation of the inventory of the given player
+	 * 
+	 * @param p
+	 *            Player
+	 * @param name
+	 *            Player's name
+	 * @return String of inventory
+	 */
 	private HashMap<String, String> inventory(Player p, String name) {
 		HashMap<String, String> r = new HashMap<String, String>();
 		r.put(name, "Inventory\n" + p.getInventoryAsString());
