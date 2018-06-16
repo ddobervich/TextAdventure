@@ -54,6 +54,9 @@ public class Room {
 		for (int i = 0; i < enemies.size(); i++) {
 			enemies.get(i).tick(this);
 		}
+		for (int i = 0; i < fights.size(); i++) {
+			fights.get(i).tick();
+		}
 	}
 
 	public ArrayList<Item> getItems() {
@@ -236,7 +239,7 @@ public class Room {
 	}
 
 	public static void loadRoomsFromFile() {
-		File folder = new File("./assets/room");
+		File folder = new File("./assets/rooms");
 		for (File file : folder.listFiles()) {
 			FileReader t = new FileReader(file);
 

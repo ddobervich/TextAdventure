@@ -48,6 +48,7 @@ public class ChatServer {
 	 * handler threads.
 	 */
 	public static void main(String[] args) throws Exception {
+		Skill.loadSkillsFromFile();
 		Item.loadItemsFromFile();
 		Room.loadRoomsFromFile();
 		Enemy.loadEnemiesFromFile();

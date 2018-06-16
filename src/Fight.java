@@ -10,6 +10,8 @@ public class Fight {
 
 	private ArrayList<Player> spectators;
 
+	private ArrayList<Attack> attacks;
+
 	/*
 	 * Player v Player one has to be the offender(person who requests fight)
 	 * Player v Enemy player defaults to being the offender although enemy can
@@ -23,6 +25,7 @@ public class Fight {
 		def.moveToFight();
 		PP = true;
 		spectators = new ArrayList<Player>();
+		attacks = new ArrayList<Attack>();
 	}
 
 	public Fight(Player off, Enemy e) {
@@ -32,6 +35,20 @@ public class Fight {
 		e.moveToFight();
 		PP = false;
 		spectators = new ArrayList<Player>();
+		attacks = new ArrayList<Attack>();
+	}
+
+	public void tick() {
+		for (int i = 0; i < attacks.size(); i++) {
+			attacks.get(i).tick();
+			if (attacks.get(i).isOver()) {
+				if (attacks.get(i).isOffenders()) {
+					
+				} else {
+
+				}
+			}
+		}
 	}
 
 	public boolean isPlayerOnPlayerFight() {
@@ -40,6 +57,14 @@ public class Fight {
 
 	public boolean isPlayerOnEnemyFight() {
 		return !PP;
+	}
+
+	public boolean isOffender(String name) {
+		return offender.getName().equals(name);
+	}
+
+	public void addAttack(Attack a) {
+		attacks.add(a);
 	}
 
 	public void endFight(Room r) {
@@ -90,6 +115,13 @@ public class Fight {
 		return false;
 	}
 
+	public String getOpponentName() {
+		if (enemy == null) {
+			return defender.getName();
+		}
+		return enemy.getName();
+	}
+
 	public Player getOffender() {
 		return offender;
 	}
@@ -100,6 +132,14 @@ public class Fight {
 
 	public Enemy getEnemy() {
 		return enemy;
+	}
+
+	public ArrayList<Player> getSpectators() {
+		return spectators;
+	}
+
+	public ArrayList<Attack> getAttacks() {
+		return attacks;
 	}
 
 }

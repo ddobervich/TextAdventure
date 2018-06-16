@@ -13,23 +13,32 @@ public class Player {
 
 	private double HP = 10;
 	private double HPMax = 10;
-	
+
 	public boolean inFight = false;
+
+	private ArrayList<Skill> skills;
 
 	public Player(String name) {
 		this.name = name;
 		items = new ArrayList<Item>();
 		body = new ArrayList<Integer>();
+		skills = new ArrayList<Skill>();
+		skills.add(Skill.getSpecificSkill("punch"));
+	}
+	
+	public void takeHit(Attack a){
+		HP -= Functions.getDamage(a.getAttack(), getDefense());
 	}
 
 	public String getName() {
 		return name;
 	}
-	
-	public void moveToFight(){
+
+	public void moveToFight() {
 		inFight = true;
 	}
-	public void moveOutOfFight(){
+
+	public void moveOutOfFight() {
 		inFight = false;
 	}
 
@@ -101,6 +110,14 @@ public class Player {
 		return items;
 	}
 
+	public void addSkill(Skill s) {
+		skills.add(s);
+	}
+
+	public ArrayList<Skill> getSkills() {
+		return skills;
+	}
+
 	public String getInventoryAsString() {
 		String r = "";
 		r += "Hand:\n";
@@ -137,6 +154,14 @@ public class Player {
 			return attack;
 		} else {
 			return attack + items.get(hand).getAttack();
+		}
+	}
+
+	public double getSpeed() {
+		if (hand == -1) {
+			return 0;
+		} else {
+			return items.get(hand).getSpeed();
 		}
 	}
 

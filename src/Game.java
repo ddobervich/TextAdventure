@@ -113,20 +113,29 @@ public class Game {
 	public String getStateText(String name) {
 		Room room = getRoomofPlayer(name);
 		Player player = getPlayer(name);
+
 		if (!player.inFight) {
 			return look(room, name);
 		} else {
 			Fight f = room.getFight(name);
 			String out = "You are in a fight in " + room.getName();
 			out += "\n";
-			out += f.getOffender().getName();
-
+			out += f.getOffender().getName() + "\n";
+			out += "vs\n";
+			out += f.getOpponentName() + "\n";
+			for (Attack a : f.getAttacks()) {
+				if (true || a.isOffenders() != f.isOffender(name)) {
+					out += a.getText() + "\n";
+				}
+			}
 			return out;
 		}
 	}
 
 	public HashMap<String, String> processAction(String name, String input) {
 		HashMap<String, String> r = new HashMap<String, String>();
+		Room currentRoom = getRoomofPlayer(name);
+		Player p = currentRoom.getPlayer(name);
 		// LOGIC
 
 		if (input.startsWith("say ")) {
@@ -142,14 +151,11 @@ public class Game {
 		}
 		if (input.startsWith("observe ")) {
 			String object = input.substring(8);
-			Room currentRoom = getRoomofPlayer(name);
 			return observe(currentRoom, name, object);
 
 		}
 		if (input.startsWith("move ")) {
 			String location = input.substring(5);
-			Room currentRoom = getRoomofPlayer(name);
-			Player p = currentRoom.getPlayer(name);
 			return move(p, currentRoom, name, location);
 		}
 
@@ -163,55 +169,53 @@ public class Game {
 				object = input.substring(5);
 			if (input.startsWith("pick up "))
 				object = input.substring(8);
-			Player p = getPlayer(name);
-			Room currentRoom = getRoomofPlayer(name);
 			return take(p, currentRoom, name, object);
 		}
 
 		if (input.startsWith("inventory")) {
-			Player p = getPlayer(name);
 			return inventory(p, name);
 		}
 
 		if (input.startsWith("drop ")) {
 			String object = input.substring(5);
-			Room currentRoom = getRoomofPlayer(name);
-			Player p = getPlayer(name);
 			return drop(p, currentRoom, name, object);
 		}
 
 		if (input.startsWith("equip ")) {
 			String object = input.substring(6);
-			Player p = getPlayer(name);
 			return equip(p, name, object);
 		}
 
 		if (input.startsWith("unequip ")) {
 			String object = input.substring(8);
-			Player p = getPlayer(name);
 			return unEquip(p, name, object);
 		}
 
 		if (input.startsWith("unequip all")) {
-			Player p = getPlayer(name);
 			return unEquipAll(p, name);
 		}
 
 		if (input.startsWith("stats")) {
-			Player p = getPlayer(name);
 			return stats(p);
 		}
 
 		if (input.startsWith("fight ")) {
 			String object = input.substring(6);
-			Room currentRoom = getRoomofPlayer(name);
-			Player p = getPlayer(name);
 			return fight(p, currentRoom, object, name);
 		}
 
 		if (input.startsWith("leave")) {
-			Room currentRoom = getRoomofPlayer(name);
 			return leave(currentRoom, name);
+		}
+
+		System.out.println(p);
+		if (p.inFight) {
+			Fight f = currentRoom.getFight(name);
+			for (Skill s : p.getSkills()) {
+				if (input.startsWith(s.getName())) {
+					f.addAttack(new Attack(f, p, s));
+				}
+			}
 		}
 
 		return r;

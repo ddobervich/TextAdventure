@@ -139,9 +139,9 @@ public class Enemy {
 		return r;
 	}
 
-	public static Enemy getSpecificItem(String item) {
+	public static Enemy getSpecificItem(String enemy) {
 		for (Enemy e : enemies) {
-			if (e.getName().equals(item)) {
+			if (e.getName().equals(enemy)) {
 				return e.getClone();
 			}
 		}
