@@ -61,10 +61,9 @@ public class Attack {
 
 	public String getText() {
 		String r = skill.getName() + " " + attack + "   ";
-		int c = delayTotal;
+
 		for (int i = 0; i < delayTotal; i++) {
-			c--;
-			if (i <= c) {
+			if (i <= (delayTotal - count)) {
 				r += "*";
 			} else {
 				r += "-";

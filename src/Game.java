@@ -51,7 +51,6 @@ public class Game {
 
 	public void addPlayer(String name) {
 		Player p = new Player(name);
-
 		// TODO load if player already exists
 		rooms.get(rooms.size() - 1).addPlayer(p);
 	}
@@ -62,19 +61,11 @@ public class Game {
 	 * 
 	 * @return
 	 */
-	private ArrayList<Player> getPlayers() {
+	public ArrayList<Player> getPlayers() {
 		ArrayList<Player> r = new ArrayList<Player>();
 		for (Room room : rooms) {
 			for (Player player : room.getPlayers()) {
 				r.add(player);
-			}
-			for (Fight f : room.getFights()) {
-				if (f.getOffender() != null) {
-					r.add(f.getOffender());
-				}
-				if (f.getDefender() != null) {
-					r.add(f.getDefender());
-				}
 			}
 		}
 		return r;
@@ -86,6 +77,7 @@ public class Game {
 				return p;
 			}
 		}
+		System.out.println(name + "KK");
 		return null;
 	}
 
@@ -208,7 +200,6 @@ public class Game {
 			return leave(currentRoom, name);
 		}
 
-		System.out.println(p);
 		if (p.inFight) {
 			Fight f = currentRoom.getFight(name);
 			for (Skill s : p.getSkills()) {
@@ -527,8 +518,6 @@ public class Game {
 			return r;
 		}
 		Fight f = new Fight(p, e);
-		currentRoom.removeEnemy(e);
-		currentRoom.removePlayer(p);
 		currentRoom.addFight(f);
 		r.put(name, "You are now in a fight with " + object);
 		return r;

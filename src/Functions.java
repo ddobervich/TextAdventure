@@ -3,7 +3,7 @@ public class Functions {
 
 	public static int attackDelay(double attack, double speed) {
 		double d = Math.pow(1.2, attack - speed);
-		return (int) d + 1;
+		return (int) d + 5;
 	}
 
 	public static double getDamage(double attack, double defense) {

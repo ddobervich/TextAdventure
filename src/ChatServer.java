@@ -41,7 +41,7 @@ public class ChatServer {
 
 	private static Game game;
 
-	public static final int GAME_TICK_DELAY = 1000;
+	public static final int GAME_TICK_DELAY = 500;
 
 	/**
 	 * The appplication main method, which just listens on a port and spawns
@@ -61,9 +61,13 @@ public class ChatServer {
 			public void run() {
 				long lastUpdate = System.currentTimeMillis();
 				while (true) {
+
 					if (System.currentTimeMillis() - lastUpdate > GAME_TICK_DELAY) {
 						lastUpdate = System.currentTimeMillis();
 						game.tick();
+						for (Player p : game.getPlayers()) {
+							users.get(p.getName()).println("DATA" + game.getStateText(p.getName()));
+						}
 					}
 				}
 			}
@@ -133,13 +137,13 @@ public class ChatServer {
 				// Accept messages from this client and broadcast them.
 				// Ignore other clients that cannot be broadcasted to.
 				while (true) {
-					users.get(name).println("DATA" + game.getStateText(name));
+
 					String input = in.readLine();
 					if (input == null) {
 						return;
 					}
 					// update for side bar
-
+					users.get(name).println("DATA" + game.getStateText(name));
 					// updates for all everyone
 					HashMap<String, String> toSend = game.processAction(name, input);
 					for (String name : toSend.keySet()) {

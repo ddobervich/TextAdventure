@@ -42,11 +42,18 @@ public class Fight {
 		for (int i = 0; i < attacks.size(); i++) {
 			attacks.get(i).tick();
 			if (attacks.get(i).isOver()) {
-				if (attacks.get(i).isOffenders()) {
-					
-				} else {
+				if (!attacks.get(i).isOffenders()) {
+					offender.takeHit(attacks.get(i));
 
+				} else {
+					if (isPlayerOnPlayerFight()) {
+						defender.takeHit(attacks.get(i));
+					} else {
+						enemy.takeHit(attacks.get(i));
+					}
 				}
+				attacks.remove(i);
+				i--;
 			}
 		}
 	}
@@ -71,22 +78,16 @@ public class Fight {
 		r.removeFight(this);
 		if (offender != null) {
 			offender.moveOutOfFight();
-			r.addPlayer(offender);
 		}
 		if (defender != null) {
 			defender.moveOutOfFight();
-			r.addPlayer(defender);
 		}
 		if (enemy != null) {
 			enemy.moveOutOfFight();
-			r.addEnemy(enemy);
 		}
 		offender = null;
 		defender = null;
 		enemy = null;
-		for (Player p : spectators) {
-			r.addPlayer(p);
-		}
 		spectators.clear();
 
 	}

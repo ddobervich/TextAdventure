@@ -47,6 +47,10 @@ public class Enemy {
 				+ HPMax;
 
 	}
+	
+	public void takeHit(Attack a){
+		HP -= Functions.getDamage(a.getAttack(), getDefense());
+	}
 
 	public void moveToFight() {
 		inFight = true;
