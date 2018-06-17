@@ -25,9 +25,13 @@ public class Player {
 		skills = new ArrayList<Skill>();
 		skills.add(Skill.getSpecificSkill("punch"));
 	}
-	
-	public void takeHit(Attack a){
+
+	public void takeHit(Attack a) {
 		HP -= Functions.getDamage(a.getAttack(), getDefense());
+	}
+
+	public boolean isDead() {
+		return HP < 0;
 	}
 
 	public String getName() {

@@ -56,6 +56,10 @@ public class Room {
 		}
 		for (int i = 0; i < fights.size(); i++) {
 			fights.get(i).tick();
+			if (fights.get(i).isOver()) {
+				fights.get(i).endFight(this);
+				i--;
+			}
 		}
 	}
 

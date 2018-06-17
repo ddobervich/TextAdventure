@@ -64,10 +64,10 @@ public class ChatServer {
 
 					if (System.currentTimeMillis() - lastUpdate > GAME_TICK_DELAY) {
 						lastUpdate = System.currentTimeMillis();
-						game.tick();
 						for (Player p : game.getPlayers()) {
 							users.get(p.getName()).println("DATA" + game.getStateText(p.getName()));
 						}
+						game.tick();
 					}
 				}
 			}

@@ -112,9 +112,9 @@ public class Game {
 			Fight f = room.getFight(name);
 			String out = "You are in a fight in " + room.getName();
 			out += "\n";
-			out += f.getOffender().getName() + "\n";
+			out += f.getOffender().getName() + " " + f.getOffender().getHP() + "\n";
 			out += "vs\n";
-			out += f.getOpponentName() + "\n";
+			out += f.getOpponentName() + " " + f.getOpponentHP() + "\n";
 			for (Attack a : f.getAttacks()) {
 				if (true || a.isOffenders() != f.isOffender(name)) {
 					out += a.getText() + "\n";
@@ -196,12 +196,13 @@ public class Game {
 			return fight(p, currentRoom, object, name);
 		}
 
-		if (input.startsWith("leave")) {
-			return leave(currentRoom, name);
-		}
-
 		if (p.inFight) {
 			Fight f = currentRoom.getFight(name);
+
+			if (input.startsWith("leave")) {
+				return leave(currentRoom, name);
+			}
+
 			for (Skill s : p.getSkills()) {
 				if (input.startsWith(s.getName())) {
 					f.addAttack(new Attack(f, p, s));

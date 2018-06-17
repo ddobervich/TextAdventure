@@ -58,6 +58,22 @@ public class Fight {
 		}
 	}
 
+	public boolean isOver() {
+		if (offender.isDead()) {
+			return true;
+		}
+		if (isPlayerOnPlayerFight()) {
+			if (defender.isDead()) {
+				return true;
+			}
+		} else {
+			if (enemy.isDead()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public boolean isPlayerOnPlayerFight() {
 		return PP;
 	}
@@ -121,6 +137,13 @@ public class Fight {
 			return defender.getName();
 		}
 		return enemy.getName();
+	}
+
+	public double getOpponentHP() {
+		if (enemy == null) {
+			return defender.getHP();
+		}
+		return enemy.getHP();
 	}
 
 	public Player getOffender() {

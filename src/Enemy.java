@@ -47,8 +47,12 @@ public class Enemy {
 				+ HPMax;
 
 	}
-	
-	public void takeHit(Attack a){
+
+	public boolean isDead() {
+		return HP < 0;
+	}
+
+	public void takeHit(Attack a) {
 		HP -= Functions.getDamage(a.getAttack(), getDefense());
 	}
 
@@ -70,6 +74,9 @@ public class Enemy {
 				r.removeEnemy(this);
 				r.getConnectedRooms().get((int) (Math.random() * r.getConnectedRooms().size())).addEnemy(this);
 			}
+		}
+		if (inFight) {
+
 		}
 	}
 
@@ -121,7 +128,7 @@ public class Enemy {
 			double a = t.tagD("attack");
 			double de = t.tagD("defense");
 			double s = t.tagD("speed");
-			double hp = t.tagD("HP");
+			double hp = t.tagD("hp");
 			enemies.add(new Enemy(n, d, ty, r, a, de, s, hp));
 		}
 
