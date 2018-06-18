@@ -113,7 +113,7 @@ public class Fight {
 	}
 
 	public boolean contains(String name) {
-		if (offender.getName().equals(name) || defender.getName().equals(name) || enemy.getName().equals(name)) {
+		if (offender.getName().equals(name) || getOpponentName().equals(name)) {
 			return true;
 		}
 		for (Player p : spectators) {

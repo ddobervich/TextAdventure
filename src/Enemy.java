@@ -19,13 +19,17 @@ public class Enemy {
 
 	public boolean inFight = false;
 
+	private ArrayList<Skill> skills;
+
 	public static final ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+
+	public static final double ATTACK_DELAY_CONSTANT = 10;
 	/*
 	 * Passive; Neutral; Aggressive;
 	 */
 
 	public Enemy(String name, String description, String type, int rarity, double attack, double defense, double speed,
-			double HP) {
+			double HP, ArrayList<Skill> skills) {
 		super();
 		this.name = name;
 		this.description = description;
@@ -36,10 +40,15 @@ public class Enemy {
 		this.speed = speed;
 		this.HP = HP;
 		this.HPMax = HP;
+		this.skills = skills;
 	}
 
 	public Enemy getClone() {
-		return new Enemy(name, description, type, rarity, attack, defense, speed, HPMax);
+		ArrayList<Skill> skillCopy = new ArrayList<Skill>();
+		for (Skill s : skills) {
+			skillCopy.add(s.getClone());
+		}
+		return new Enemy(name, description, type, rarity, attack, defense, speed, HPMax, skillCopy);
 	}
 
 	public String toString() {
@@ -65,7 +74,10 @@ public class Enemy {
 	}
 
 	public void tick(Room r) {
-		if (!inFight && speed > 0) {
+		if (speed < 0) {
+			return;
+		}
+		if (!inFight) {
 			if (type.equals("aggressive") && r.getPlayers().size() > 0 && Math.random() < 0) {
 				Fight f = new Fight(r.getPlayers().get(0), this);
 				r.addFight(f);
@@ -75,9 +87,28 @@ public class Enemy {
 				r.getConnectedRooms().get((int) (Math.random() * r.getConnectedRooms().size())).addEnemy(this);
 			}
 		}
-		if (inFight) {
-
+		if (inFight && !type.equals("passive")) {
+			if (Math.random() * ATTACK_DELAY_CONSTANT / speed < 1) {
+				Fight f = r.getFight(name);
+				f.addAttack(new Attack(f, this, getRandomSkill()));
+			}
 		}
+	}
+
+	public Skill getRandomSkill() {
+		Skill r = null;
+		while (r == null) {
+			int t = (int) (Math.random() * skills.size());
+			for (int i = 0; i < skills.get(t).getRarity(); i++) {
+				if (Math.random() > .5) {
+					break;
+				}
+				if (i == skills.get(t).getRarity() - 1) {
+					r = skills.get(t).getClone();
+				}
+			}
+		}
+		return r;
 	}
 
 	public String getName() {
@@ -129,7 +160,16 @@ public class Enemy {
 			double de = t.tagD("defense");
 			double s = t.tagD("speed");
 			double hp = t.tagD("hp");
-			enemies.add(new Enemy(n, d, ty, r, a, de, s, hp));
+
+			ArrayList<Skill> sk = new ArrayList<Skill>();
+			String[] temp = t.tagList("skills");
+			for (String skillName : temp) {
+				Skill skillTemp = Skill.getSpecificSkill(skillName);
+				if (skillTemp != null) {
+					sk.add(skillTemp);
+				}
+			}
+			enemies.add(new Enemy(n, d, ty, r, a, de, s, hp, sk));
 		}
 
 	}

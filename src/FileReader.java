@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -78,6 +79,18 @@ public class FileReader {
 		} catch (Exception e) {
 			// System.out.println(tag);
 			return "";
+		}
+	}
+
+	public String[] tagList(String tag) {
+		try {
+			String r = tags.get(tag);
+			while (r.startsWith(" ")) {
+				r = r.substring(1);
+			}
+			return r.split(",");
+		} catch (Exception e) {
+			return null;
 		}
 	}
 

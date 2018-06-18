@@ -26,6 +26,15 @@ public class Attack {
 		this.delayTotal = Functions.attackDelay(attack, speed);
 		this.skill = s;
 	}
+	
+	public Attack(Fight f, Enemy e, Skill s) {
+		this.attack = e.getAttack();
+		this.speed = e.getSpeed();
+		this.side = false;
+		this.count = 0;
+		this.delayTotal = Functions.attackDelay(attack, speed);
+		this.skill = s;
+	}
 
 	public void tick() {
 		count++;
