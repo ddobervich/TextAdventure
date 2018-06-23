@@ -1,0 +1,4 @@
+<name>fast punch
+<rarity>1
+<speed>2
+<find>true

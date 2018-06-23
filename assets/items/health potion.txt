@@ -1,0 +1,6 @@
+<name>health potion
+<desc>Small textured glass bottle mostly filled with a pale red liquid. Or maybe not, you wouldn't know.
+<type>object
+<rarity>1
+<weigth>.1
+<effects>health;5;1

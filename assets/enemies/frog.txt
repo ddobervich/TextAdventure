@@ -1,0 +1,9 @@
+<name>frog
+<desc>hippidy hoppidy get of my property
+<type>neutral
+<rarity>1
+<attack>1
+<defense>0
+<speed>2
+<hp>5
+<skills>lick

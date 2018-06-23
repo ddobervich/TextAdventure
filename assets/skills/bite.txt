@@ -1,0 +1,4 @@
+<name>bite
+<rarity>1
+<speed>0
+<find>false

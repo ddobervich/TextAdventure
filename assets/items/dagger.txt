@@ -1,0 +1,6 @@
+<name>dagger
+<desc>A stick but metal
+<type>weapon
+<rarity>2
+<attack>1
+<weigth>.6

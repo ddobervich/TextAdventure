@@ -1,0 +1,5 @@
+<name>rock
+<desc>A small object for you to hold when you're lonely
+<type>object
+<rarity>1
+<weigth>.3

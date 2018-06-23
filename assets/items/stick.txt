@@ -1,0 +1,5 @@
+<name>stick
+<desc>A long poking implement
+<type>object
+<rarity>1
+<weigth>.1

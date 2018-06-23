@@ -1,0 +1,6 @@
+<name>hat
+<desc>Just in case your head can't take the sun anymore
+<type>armor
+<rarity>2
+<weigth>.2
+<thickness>.1

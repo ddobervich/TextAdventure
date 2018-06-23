@@ -1,0 +1,5 @@
+<name>scroll
+<desc>A quick read but only once.
+<type>object
+<rarity>3
+<weigth>.1

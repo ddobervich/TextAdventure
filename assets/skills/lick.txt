@@ -1,0 +1,4 @@
+<name>lick
+<rarity>1
+<speed>1
+<find>false

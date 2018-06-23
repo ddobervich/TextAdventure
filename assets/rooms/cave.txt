@@ -1,0 +1,3 @@
+<name>cave
+<desc>Ooo Spooky. Am I right?
+<rarity>1

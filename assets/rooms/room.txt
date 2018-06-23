@@ -1,0 +1,3 @@
+<name>room
+<desc>It's a room what else do you want
+<rarity>1

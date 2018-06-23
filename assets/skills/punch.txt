@@ -1,0 +1,4 @@
+<name>punch
+<rarity>1000
+<speed>0
+<find>false
