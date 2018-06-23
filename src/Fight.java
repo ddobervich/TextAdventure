@@ -124,6 +124,23 @@ public class Fight {
 		return false;
 	}
 
+	public String getEndString() {
+		if (isPlayerOnEnemyFight()) {
+			if (offender.getHP() < enemy.getHP()) {
+				return "You have lost to a " + enemy.getName();
+			} else {
+				return "You have defeated a " + enemy.getName();
+			}
+		} else {
+			if (offender.getHP() < defender.getHP()) {
+				return "You have lost to " + defender.getName();
+			} else {
+				return "You have defeated " + defender.getName();
+			}
+		}
+
+	}
+
 	public boolean containsFighter(String name) {
 		if (offender.getName().equals(name) || defender.getName().equals(name) || enemy.getName().equals(name)) {
 			return true;

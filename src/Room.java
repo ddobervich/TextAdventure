@@ -56,10 +56,9 @@ public class Room {
 		}
 		for (int i = 0; i < fights.size(); i++) {
 			fights.get(i).tick();
-			if (fights.get(i).isOver()) {
-				fights.get(i).endFight(this);
-				i--;
-			}
+		}
+		for (int i = 0; i < players.size(); i++) {
+			players.get(i).tick();
 		}
 	}
 
@@ -235,11 +234,6 @@ public class Room {
 
 	public Room getClone() {
 		return new Room(name, description, rarity);
-	}
-
-	public String toString() {
-		return name + ";" + description + ";" + rarity;
-
 	}
 
 	public static void loadRoomsFromFile() {

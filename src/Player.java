@@ -17,17 +17,44 @@ public class Player {
 	public boolean inFight = false;
 
 	private ArrayList<Skill> skills;
+	private ArrayList<Effect> effects;
 
 	public Player(String name) {
 		this.name = name;
 		items = new ArrayList<Item>();
 		body = new ArrayList<Integer>();
 		skills = new ArrayList<Skill>();
+		effects = new ArrayList<Effect>();
 		skills.add(Skill.getSpecificSkill("punch"));
+	}
+
+	public void tick() {
+		for (int i = 0; i < effects.size(); i++) {
+			if (effects.get(i).isOver()) {
+				effects.remove(i);
+				i--;
+			}
+		}
+		for (Effect e : effects) {
+			e.effect(this);
+		}
+	}
+
+	public void applyEffects(Item i) {
+		for (Effect c : i.getEffects()) {
+			effects.add(c);
+		}
 	}
 
 	public void takeHit(Attack a) {
 		HP -= Functions.getDamage(a.getAttack(), getDefense());
+	}
+
+	public void heal(double h) {
+		HP += h;
+		if (HP > HPMax) {
+			HP = HPMax;
+		}
 	}
 
 	public boolean isDead() {
@@ -47,7 +74,11 @@ public class Player {
 	}
 
 	public boolean canTakeItem() {
-		return getWeight() < weightMax;
+		double sum = 0;
+		for (Effect e : effects) {
+			sum += e.getWeight();
+		}
+		return getWeight() < weightMax + sum;
 	}
 
 	public double getWeight() {
@@ -81,6 +112,10 @@ public class Player {
 				return;
 			}
 		}
+	}
+
+	public void removeItem(Item item) {
+		items.remove(item);
 	}
 
 	public Item getItem(String name) {
@@ -154,18 +189,26 @@ public class Player {
 	}
 
 	public double getAttack() {
+		double sum = 0;
+		for (Effect e : effects) {
+			sum += e.getAttack();
+		}
 		if (hand == -1) {
-			return attack;
+			return attack + sum;
 		} else {
-			return attack + items.get(hand).getAttack();
+			return attack + items.get(hand).getAttack() + sum;
 		}
 	}
 
 	public double getSpeed() {
+		double sum = 0;
+		for (Effect e : effects) {
+			sum += e.getSpeed();
+		}
 		if (hand == -1) {
-			return 0;
+			return sum;
 		} else {
-			return items.get(hand).getSpeed();
+			return items.get(hand).getSpeed() + sum;
 		}
 	}
 
@@ -174,7 +217,10 @@ public class Player {
 		for (int i = 0; i < body.size(); i++) {
 			sum += items.get(body.get(i)).getDefense();
 		}
-		return sum;
+		for (Effect e : effects) {
+			sum += e.getDefense();
+		}
+		return sum + sum;
 	}
 
 	public double getThicknessMax() {

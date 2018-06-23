@@ -20,6 +20,7 @@ public class Enemy {
 	public boolean inFight = false;
 
 	private ArrayList<Skill> skills;
+	private ArrayList<Effect> effects;
 
 	public static final ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 
@@ -41,6 +42,7 @@ public class Enemy {
 		this.HP = HP;
 		this.HPMax = HP;
 		this.skills = skills;
+		effects = new ArrayList<Effect>();
 	}
 
 	public Enemy getClone() {
@@ -49,12 +51,6 @@ public class Enemy {
 			skillCopy.add(s.getClone());
 		}
 		return new Enemy(name, description, type, rarity, attack, defense, speed, HPMax, skillCopy);
-	}
-
-	public String toString() {
-		return name + ";" + description + ";" + type + ";" + rarity + ";" + attack + ";" + defense + ";" + speed + ";"
-				+ HPMax;
-
 	}
 
 	public boolean isDead() {
@@ -74,6 +70,8 @@ public class Enemy {
 	}
 
 	public void tick(Room r) {
+		
+		
 		if (speed < 0) {
 			return;
 		}

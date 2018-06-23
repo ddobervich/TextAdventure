@@ -15,14 +15,16 @@ public class Item {
 	private double speed; // speed of weapon
 	private double weight; // weight of item
 	private double thickness; // determines how much can be equipped
+	public ArrayList<Effect> effects;
 
 	public static final ArrayList<Item> items = new ArrayList<Item>();
+
 	/*
 	 * Weapon; Food; Armor/Clothes; Object;
 	 */
 
 	public Item(String name, String description, String type, int rarity, double attack, double defense, double speed,
-			double weight, double thickness) {
+			double weight, double thickness, ArrayList<Effect> effects) {
 		super();
 		this.name = name;
 		this.description = description;
@@ -33,16 +35,15 @@ public class Item {
 		this.speed = speed;
 		this.weight = weight;
 		this.thickness = thickness;
+		this.effects = effects;
 	}
 
 	public Item getClone() {
-		return new Item(name, description, type, rarity, attack, defense, speed, weight, thickness);
-	}
-
-	public String toString() {
-		return name + ";" + description + ";" + type + ";" + rarity + ";" + attack + ";" + defense + ";" + speed + ";"
-				+ weight + ";" + thickness;
-
+		ArrayList<Effect> effectCopy = new ArrayList<Effect>();
+		for (Effect e : effects) {
+			effectCopy.add(e.getClone());
+		}
+		return new Item(name, description, type, rarity, attack, defense, speed, weight, thickness, effectCopy);
 	}
 
 	public String getName() {
@@ -81,6 +82,10 @@ public class Item {
 		return thickness;
 	}
 
+	public ArrayList<Effect> getEffects() {
+		return effects;
+	}
+
 	public static void loadItemsFromFile() {
 		File folder = new File("./assets/items");
 		for (File file : folder.listFiles()) {
@@ -95,7 +100,12 @@ public class Item {
 			double s = t.tagD("speed");
 			double w = t.tagD("weight");
 			double th = t.tagD("thickness");
-			items.add(new Item(n, d, ty, r, a, de, s, w, th));
+			ArrayList<Effect> ef = new ArrayList<Effect>();
+			String[] tempEffects = t.tagList("effects");
+			for (String effectString : tempEffects) {
+				ef.add(new Effect(effectString));
+			}
+			items.add(new Item(n, d, ty, r, a, de, s, w, th, ef));
 		}
 
 	}

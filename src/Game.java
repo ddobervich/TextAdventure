@@ -164,6 +164,15 @@ public class Game {
 			return take(p, currentRoom, name, object);
 		}
 
+		if (input.startsWith("consume ") || input.startsWith("eat ")) {
+			String object = "";
+			if (input.startsWith("consume "))
+				object = input.substring(8);
+			if (input.startsWith("eat "))
+				object = input.substring(4);
+			return consume(p, currentRoom, name, object);
+		}
+
 		if (input.startsWith("inventory")) {
 			return inventory(p, name);
 		}
@@ -196,8 +205,17 @@ public class Game {
 			return fight(p, currentRoom, object, name);
 		}
 
+		if (input.startsWith("skills")) {
+			return skills(p, name);
+		}
+
 		if (p.inFight) {
 			Fight f = currentRoom.getFight(name);
+			if (f.isOver()) {
+				r.put(name, f.getEndString());
+				f.endFight(currentRoom);
+				return r;
+			}
 
 			if (input.startsWith("leave")) {
 				return leave(currentRoom, name);
@@ -537,6 +555,39 @@ public class Game {
 		HashMap<String, String> r = new HashMap<String, String>();
 		currentRoom.getFight(name).endFight(currentRoom);
 		r.put(name, "You have left the fight :(");
+		return r;
+	}
+
+	private HashMap<String, String> consume(Player p, Room currentRoom, String name, String object) {
+		HashMap<String, String> r = new HashMap<String, String>();
+		if (currentRoom.getName().equals(object)) {
+			r.put(name, "You fool! You can't consume a room... not yet at least");
+			return r;
+		}
+		Item item = p.getItem(object);
+		if (item != null) {
+			p.removeItem(item);
+			if (item.getName().equals("scroll")) {
+				Skill s = Skill.getRandomSkill();
+				p.addSkill(s);
+				r.put(name, "You read the scroll of " + Skill.convertNameToSecretLanguage(object)
+						+ "\nYou have learned the skill: " + s.getName());
+				return r;
+			}
+			p.applyEffects(item);
+			r.put(name, "You have consumed a " + object);
+			return r;
+		}
+		r.put(name, "You don't have this item");
+		return r;
+	}
+
+	private HashMap<String, String> skills(Player p, String name) {
+		HashMap<String, String> r = new HashMap<String, String>();
+		r.put(name, "Skills:\n");
+		for (Skill s : p.getSkills()) {
+			r.put(name, s.getName() + "\n");
+		}
 		return r;
 	}
 

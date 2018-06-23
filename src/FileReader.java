@@ -82,6 +82,15 @@ public class FileReader {
 		}
 	}
 
+	public Boolean tagB(String tag) {
+		try {
+			return tags.get(tag).equals("true");
+		} catch (Exception e) {
+			// System.out.println(tag);
+			return false;
+		}
+	}
+
 	public String[] tagList(String tag) {
 		try {
 			String r = tags.get(tag);
@@ -90,8 +99,7 @@ public class FileReader {
 			}
 			return r.split(",");
 		} catch (Exception e) {
-			return null;
+			return new String[0];
 		}
 	}
-
 }
